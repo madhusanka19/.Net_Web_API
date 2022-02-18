@@ -38,9 +38,9 @@ jobs:
           dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner
       - name: Build and analyze
         env:
-          GITHUB_TOKEN: ${{ 123456789 }}  # Needed to get PR information, if any
+          GITHUB_TOKEN: ${{ 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 }}  # Needed to get PR information, if any
         shell: powershell
         run: |
-          .\.sonar\scanner\dotnet-sonarscanner begin /k:"example" /d:sonar.login="${{ 9d1dcf0cd5a4407ccd516072afad1d728520f418 }}" /d:sonar.host.url="${{ 192.168.8.117:9000 }}"
+          .\.sonar\scanner\dotnet-sonarscanner begin /k:"example" /d:sonar.login="${{ 9ee2ac1694a37308068a21e16c8d246706aaf9908 }}" /d:sonar.host.url="${{ 192.168.8.117:9000 }}"
           dotnet build
-          .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.login="${{ 9d1dcf0cd5a4407ccd516072afad1d728520f418 }}"
+          .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.login="${{ 9ee2ac1694a37308068a21e16c8d246706aaf990 }}"
