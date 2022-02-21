@@ -25,7 +25,6 @@ stages {
         MsBuild.exe /t:Rebuild
         SonarScanner.MSBuild.exe end /d:sonar.login="7ae5da4a4739342c751c4cef2fc1d4810341a2ba"
        }
-     }
 }
    stage('SQuality Gate') {
      steps {
