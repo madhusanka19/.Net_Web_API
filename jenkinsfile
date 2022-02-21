@@ -1,35 +1,38 @@
 pipeline {
-    agent any 
-    stages {
-        stage('Static Analysis') {
-            steps {
-                echo 'Run the static analysis to the code' 
-            }
-        }
-        stage('Compile') {
-            steps {
-                echo 'Compile the source code' 
-            }
-        }
-        stage('Security Check') {
-            steps {
-                echo 'Run the security check against the application' 
-            }
-        }
-        stage('Run Unit Tests') {
-            steps {
-                echo 'Run unit tests from the source code' 
-            }
-        }
-        stage('Run Integration Tests') {
-            steps {
-                echo 'Run only crucial integration tests from the source code' 
-            }
-        }
-        stage('Publish Artifacts') {
-            steps {
-                echo 'Save the assemblies generated from the compilation' 
-            }
-        }
+agent any
+environment {
+   GIT_COMMIT_SHORT = sh(
+     script: "printf \$(git rev-parse --short ${GIT_COMMIT})",
+     returnStdout: true
+    )
+}
+tools {
+   maven 'maven'
+   jdk 'java'
+}
+stages {
+  stage('Build project') {
+    steps {
+      sh '''mvn install'''
     }
+  }
+  stage('SonarQube analysis') {
+    environment {
+      SCANNER_HOME = tool 'Sonar-scanner'
+    }
+    steps {
+        SonarScanner.MSBuild.exe begin /k:"TestProject" /d:sonar.host.url="http://192.168.1.226:9000" /d:sonar.login="7ae5da4a4739342c751c4cef2fc1d4810341a2ba"
+        MsBuild.exe /t:Rebuild
+        SonarScanner.MSBuild.exe end /d:sonar.login="7ae5da4a4739342c751c4cef2fc1d4810341a2ba"
+       }
+     }
+}
+   stage('SQuality Gate') {
+     steps {
+       timeout(time: 1, unit: 'MINUTES') {
+       waitForQualityGate abortPipeline: true
+       }
+  }
+}
+}
 }
